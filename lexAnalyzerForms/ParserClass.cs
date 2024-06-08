@@ -332,6 +332,7 @@ namespace lexAnalyzerForms
                     stateParser[0].type = LexemType.LSQUARE;
                     stateParser[1].state = StateLetter.S;
                     stateParser[2].type = LexemType.RSQUARE;
+                    
                     fucts.RemoveAt(1);
                     fucts.Insert(1, name);
                 }
