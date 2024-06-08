@@ -34,10 +34,14 @@ namespace lexAnalyzerForms
 
 
 
-        public object Calculate()
+        public Lexer.Lexem Calculate()
         {
             // List<object> rpn = ConvertToRPN(s);
             Stack<object> numberStack = new Stack<object>();
+            List<Lexer.Lexem> variableStack = Form1.myVarStorage;
+
+            Stack<Lexer.Lexem> lexemStack = new Stack<Lexer.Lexem>();
+
             foreach (Lexer.Lexem token in lexems)
             {
                 if (token.Type != Lexer.LexemType.END)
@@ -45,27 +49,57 @@ namespace lexAnalyzerForms
                     if (token.Type == Lexer.LexemType.INTEGER)
                     {
                         numberStack.Push((int)token.Value);
+                        //lexemStack.Push(token);
                     }
 
                     if (token.Type == Lexer.LexemType.DECIMAL)
                     {
-                        numberStack.Push((double)token.Value);
+                        //numberStack.Push((double)token.Value); 
+                        lexemStack.Push(token);
                     }
+
+                    if (token.Type == Lexer.LexemType.NAME)
+                    {
+                        lexemStack.Push(token);
+                    }
+                    /*
+                    if (token.Type == Lexer.LexemType.PROGRAM)
+                    {
+                        runProgram(token.Value);
+                        //numberStack.Push((double)token.Value);
+                    }*/
 
                     if (token.Type == Lexer.LexemType.PLUS || token.Type == Lexer.LexemType.MINUS || token.Type == Lexer.LexemType.MULTIPLY || token.Type == Lexer.LexemType.DIVIDE)
                     {
                         var oper = token.Name;
-                        var a = numberStack.Pop();
-                        var b = numberStack.Pop();
-                        if (a.GetType() == typeof(int) && b.GetType() == typeof(int))
+                        Lexer.Lexem a = lexemStack.Pop();
+                        Lexer.Lexem b = lexemStack.Pop();
+                        
+                        if (a.Type == Lexer.LexemType.INTEGER && b.Type == Lexer.LexemType.INTEGER)
                         {
-                            numberStack.Push(CalculateArithmOperatorInt((int)b, (int)a, token.Type));
+                            token.Value = CalculateArithmOperatorInt((int)b.Value, (int)a.Value, token.Type);
+                            lexemStack.Push(token);
                         }
-                        if (a.GetType() == typeof(double) && b.GetType() == typeof(double))
+                        if (a.Value.GetType() == typeof(double) && b.GetType() == typeof(double))
                         {
-                            numberStack.Push(CalculateArithmOperatorDecimal((double)b, (double)a, token.Type));
+                            //lexemStack.Push(CalculateArithmOperatorDecimal((double)b, (double)a, token.Type));
+                            token.Value = CalculateArithmOperatorDecimal((double)b.Value, (double)a.Value,  token.Type);
+                            lexemStack.Push(token);
                         }
                     }
+                    
+                    if(token.Type == Lexer.LexemType.ASSIGN)
+                    {
+                        Lexer.Lexem a = lexemStack.Pop();
+                        Lexer.Lexem b = lexemStack.Pop();
+
+                        b.Value = a.Value;
+                        int ind = Form1.myVarStorage.IndexOf(a);
+                        Form1.myVarStorage[ind-1].Value = b;
+                        //    //numberStack.Push(CalculateArithmOperatorInt((int)b, (int)a, token.Type));
+                        
+                    }
+                    
                     /*
                     if (token is IOneArgFunction)
                     {
@@ -75,7 +109,27 @@ namespace lexAnalyzerForms
                     }*/
                 }
             }
-            return numberStack.Pop();
+            return lexemStack.Pop();
+        }
+
+        private void runProgram(object value)
+        {
+            /*
+            if((int)value == 1)
+            {
+                object operand = _magazine.top();
+                numberStac.pop();
+
+                object name =operand.token.value;
+
+                if (getType(name) == "float")
+                {
+                    read_tableOfFloats[name];
+                }
+            if((int)value == 2)
+            {
+
+            }*/
         }
 
         public int CalculateArithmOperatorInt(int b, int a, Lexer.LexemType type)
@@ -94,6 +148,11 @@ namespace lexAnalyzerForms
             }
             if (type == Lexer.LexemType.DIVIDE)
             {
+                if (a == 0)
+                {
+                    throw new Exception("Нельзя делить на ноль!");
+                    return 0;
+                }
                 return b / a;
             }
             return 0;
@@ -115,6 +174,11 @@ namespace lexAnalyzerForms
             }
             if (type == Lexer.LexemType.DIVIDE)
             {
+                if(a == 0)
+                {
+                    throw new Exception("Нельзя делить на ноль!");
+                    return 0;
+                }
                 return b / a;
             }
             return 0;

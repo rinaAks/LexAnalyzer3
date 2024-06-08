@@ -129,6 +129,7 @@ namespace lexAnalyzerForms
             OR,
             NAME,
             EOL,
+            PROGRAM,
             END
         }
 
@@ -375,11 +376,12 @@ namespace lexAnalyzerForms
                     {
                         if (LexemStorage[i - 1].Type == LexemType.ASSIGN && LexemStorage[i - 2].Type == LexemType.NAME)
                         {
-                            lex.Value = LexemStorage[i].Name;
-                            lex.Name = LexemStorage[i - 2].Name;
-                            VariableStorage.Add(lex);
+                            LexemStorage[i-2].Value = LexemStorage[i].Name;
+                            // lex.Name = LexemStorage[i - 2].Name;
+                            VariableStorage.Add(LexemStorage[i - 2]);
                         }
                     }
+                    
 
                     if(lex.Value == null)
                     {

@@ -41,8 +41,15 @@ namespace lexAnalyzerForms
 
             //OPS_exe ooops = new OPS_exe(opsLexemsStorage);
             //tbOutput.Text += ooops.Calculate().ToString();
+            
             OPS_exe ooops = new OPS_exe(myStorage);
-            tbOutput.Text += ooops.Calculate().ToString();
+            tbOutput.Text += ooops.Calculate().Value.ToString() + '\n';
+
+            foreach(Lexem lexem in myVarStorage) 
+            {
+                tbOutput.Text += lexem.Name.ToString() + '\n';
+                tbOutput.Text += lexem.Value.ToString() + '\n';
+            }
 
         }
     }
