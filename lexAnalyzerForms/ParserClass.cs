@@ -71,6 +71,7 @@ namespace lexAnalyzerForms
 
 
             int i = 0;
+            int j = 0;
             public Lexem Lex()
             {
                 return Form1.myStorage[i];
@@ -84,37 +85,49 @@ namespace lexAnalyzerForms
                 magasin.Add(new StateParser());
                 magasin[0].state = StateLetter.F;
 
-                //generator.Add(empty);
+                generator.Add(empty);
                 //generator[0] = new Action(empty);
 
                 while (lex.Type != LexemType.END)
                 {
-                    //StateParser stateMagas = new StateParser();
-                    //stateMagas = magasin[i];
-                    //magasin.RemoveAt(0);
-
+                    StateParser stateMagas = new StateParser();
+                    stateMagas = magasin[0];
+                    magasin.RemoveAt(0);
+                    generator[0]();
+                    generator.RemoveAt(0);
                     //надо найти пару
-                    if (magasin[i].type != LexemType.END)
+                    if (stateMagas.type != LexemType.END)
                     {
                         //вызываем функцию pair
                         //в pair передавать нулевое состояние магазина 
                         //и тип лексемы, чтобы понимать, какая комбинация - пара
-                        Pair(magasin[i].state, lex.Type);
+                        Pair(stateMagas.state, lex.Type);
                     }
 
-                    i++;
+
+
                     if (i > Form1.myStorage.Count - 1)
                         break;
-                    generator[0]();
-                    generator.RemoveAt(0);
-                    lex = Lex(); // берём следующую лексему из myStorage
+
+
+                    if (stateMagas.type == lex.Type)
+                    {
+                        i++;
+                        lex = Lex();
+
+                        //magasin.RemoveAt(0);
+
+                    }
+                    // берём следующую лексему из myStorage
                 }
             }
 
-            
+
             public void name()
             {
+
                 oPSTok.ops.Add(lex);
+                //Console.WriteLine(lex);
             }
             public void empty()
             {
@@ -124,12 +137,12 @@ namespace lexAnalyzerForms
             public void Pair(StateLetter stateLex, LexemType type)
             {
                 List<StateParser> stateParser = new List<StateParser>();
-                List<Action> fucts = new List<Action>(); 
+                List<Action> fucts = new List<Action>();
 
                 if (stateLex == StateLetter.F && type == LexemType.NAME)
                 {
-                    for (int i = 0; i < 6; i++) 
-                    { 
+                    for (int i = 0; i < 6; i++)
+                    {
                         stateParser.Add(new StateParser());
                         fucts.Add(new Action(empty));
                     }
@@ -140,14 +153,14 @@ namespace lexAnalyzerForms
                     stateParser[4].type = LexemType.SEMICOLON;
                     stateParser[5].state = StateLetter.Q;
                     fucts.RemoveAt(0);
-                    fucts.Insert(0, name);    
-                    fucts.RemoveAt(3);        
-                    fucts.Insert(3, name);
+                    fucts.Insert(0, name);
+                    fucts.RemoveAt(5);
+                    fucts.Insert(5, name);
                 }
                 if (stateLex == StateLetter.F && type == LexemType.INT_DECLARE)
                 {
-                    for (int i = 0; i < 3; i++) 
-                    { 
+                    for (int i = 0; i < 3; i++)
+                    {
                         stateParser.Add(new StateParser());
                         fucts.Add(new Action(empty));
                     }
@@ -156,12 +169,12 @@ namespace lexAnalyzerForms
                     stateParser[2].state = StateLetter.F;
 
                     fucts.RemoveAt(0);
-                    fucts.Insert(0, name); 
+                    fucts.Insert(0, name);
                 }
                 if (stateLex == StateLetter.F && type == LexemType.DECIMAL_DECLARE)
                 {
-                    for (int i = 0; i < 3; i++) 
-                    { 
+                    for (int i = 0; i < 3; i++)
+                    {
                         stateParser.Add(new StateParser());
                         fucts.Add(new Action(empty));
                     }
@@ -173,8 +186,8 @@ namespace lexAnalyzerForms
                 }
                 if (stateLex == StateLetter.F && type == LexemType.ARRAY_DECLARE)
                 {
-                    for (int i = 0; i < 3; i++) 
-                    { 
+                    for (int i = 0; i < 3; i++)
+                    {
                         stateParser.Add(new StateParser());
                         fucts.Add(new Action(empty));
                     }
@@ -186,8 +199,8 @@ namespace lexAnalyzerForms
                 }
                 if (stateLex == StateLetter.F && type == LexemType.INPUT)
                 {
-                    for (int i = 0; i < 7; i++) 
-                    { 
+                    for (int i = 0; i < 7; i++)
+                    {
                         stateParser.Add(new StateParser());
                         fucts.Add(new Action(empty));
                     }
@@ -210,9 +223,8 @@ namespace lexAnalyzerForms
                     fucts.Insert(5, name);
 
                 }
-
                 ///////    I    //////////
-                if (stateLex == StateLetter.I && type == LexemType.WHILE)
+                if (stateLex == StateLetter.I && type == LexemType.NAME)
                 {
                     for (int i = 0; i < 2; i++)
                     {
@@ -221,12 +233,36 @@ namespace lexAnalyzerForms
                     }
                     stateParser[0].type = LexemType.NAME;
                     stateParser[1].state = StateLetter.M;
-
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
+
                 }
 
-                /////////////        S        /////////////////////
+                ///////    M    //////////
+                if (stateLex == StateLetter.M && type == LexemType.COMMA)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    };
+                    stateParser[0].type = LexemType.COMMA;
+                    stateParser[1].type = LexemType.NAME;
+                    stateParser[2].state = StateLetter.M;
+                    fucts.RemoveAt(1);
+                    fucts.Insert(1, name);
+                }
+                if (stateLex == StateLetter.M && type == LexemType.SEMICOLON)
+                {
+                    for (int i = 0; i < 1; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    }
+                    stateParser[0].type = LexemType.SEMICOLON;
+                }
+
+                ///////////        S        /////////////////////
                 if (stateLex == StateLetter.S && type == LexemType.NAME)
                 {
                     for (int i = 0; i < 4; i++)
@@ -238,7 +274,6 @@ namespace lexAnalyzerForms
                     stateParser[1].state = StateLetter.H;
                     stateParser[2].state = StateLetter.V;
                     stateParser[3].state = StateLetter.U;
-
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
                 }
@@ -253,7 +288,6 @@ namespace lexAnalyzerForms
                     stateParser[0].type = LexemType.DECIMAL;
                     stateParser[1].state = StateLetter.V;
                     stateParser[2].state = StateLetter.U;
-
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
                 }
@@ -267,7 +301,6 @@ namespace lexAnalyzerForms
                     stateParser[0].type = LexemType.INTEGER;
                     stateParser[1].state = StateLetter.V;
                     stateParser[2].state = StateLetter.U;
-
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
                 }
@@ -283,17 +316,137 @@ namespace lexAnalyzerForms
                     stateParser[2].type = LexemType.RPAREN;
                     stateParser[3].state = StateLetter.V;
                     stateParser[4].state = StateLetter.U;
+
+                }
+
+                ////  H /////////
+
+                if (stateLex == StateLetter.H && type == LexemType.LSQUARE)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    }
+                    stateParser[0].type = LexemType.LSQUARE;
+                    stateParser[1].state = StateLetter.S;
+                    stateParser[2].type = LexemType.RSQUARE;
+                    fucts.RemoveAt(1);
+                    fucts.Insert(1, name);
+
+                }
+
+                ///////// Q /////////
+
+
+                if (stateLex == StateLetter.Q && type == LexemType.NAME)
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    }
+                    stateParser[0].type = LexemType.NAME;
+                    stateParser[1].state = StateLetter.H;
+                    stateParser[2].type = LexemType.ASSIGN;
+                    stateParser[3].state = StateLetter.S;
+                    stateParser[4].type = LexemType.SEMICOLON;
+                    stateParser[5].state = StateLetter.Q;
+                    fucts.RemoveAt(0);
+                    fucts.Insert(0, name);
+                    fucts.RemoveAt(5);
+                    fucts.Insert(5, name);
+                }
+                if (stateLex == StateLetter.Q && type == LexemType.INPUT)
+                {
+                    for (int i = 0; i < 7; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    }
+                    stateParser[0].type = LexemType.INPUT;
+                    stateParser[1].type = LexemType.LPAREN;
+                    stateParser[2].type = LexemType.NAME;
+                    stateParser[3].state = StateLetter.H;
+                    stateParser[4].type = LexemType.RPAREN;
+                    stateParser[5].type = LexemType.SEMICOLON;
+                    stateParser[6].state = StateLetter.Q;
+                    fucts.RemoveAt(0);
+                    fucts.Insert(0, name);
+                    fucts.RemoveAt(1);
+                    fucts.Insert(1, name);
+                    fucts.RemoveAt(2);
+                    fucts.Insert(2, name);
+                    fucts.RemoveAt(4);
+                    fucts.Insert(4, name);
+                    fucts.RemoveAt(5);
+                    fucts.Insert(5, name);
+                }
+                if (stateLex == StateLetter.Q && type == LexemType.OUTPUT)
+                {
+                    for (int i = 0; i < 6; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    }
+                    stateParser[0].type = LexemType.OUTPUT;
+                    stateParser[1].type = LexemType.LPAREN;
+                    stateParser[2].state = StateLetter.S;
+                    stateParser[3].type = LexemType.RPAREN;
+                    stateParser[4].type = LexemType.SEMICOLON;
+                    stateParser[5].state = StateLetter.Q;
+                }
+                if (stateLex == StateLetter.Q && type == LexemType.IF)
+                {
+                    for (int i = 0; i < 9; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    }
+                    stateParser[0].type = LexemType.IF;
+                    stateParser[1].type = LexemType.LPAREN;
+                    stateParser[2].state = StateLetter.C;
+                    stateParser[3].type = LexemType.RPAREN;
+                    stateParser[4].type = LexemType.LBRACE;
+                    stateParser[5].state = StateLetter.Q;
+                    stateParser[6].type = LexemType.RBRACE;
+                    stateParser[7].state = StateLetter.D;
+                    stateParser[8].state = StateLetter.Q;
+                }
+
+                if (stateLex == StateLetter.Q && type == LexemType.WHILE)
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        stateParser.Add(new StateParser());
+                        fucts.Add(new Action(empty));
+                    }
+                    stateParser[0].type = LexemType.WHILE;
+                    stateParser[1].type = LexemType.LPAREN;
+                    stateParser[2].state = StateLetter.C;
+                    stateParser[3].type = LexemType.RPAREN;
+                    stateParser[4].type = LexemType.LBRACE;
+                    stateParser[5].state = StateLetter.Q;
+                    stateParser[6].type = LexemType.RBRACE;
+                    stateParser[7].state = StateLetter.Q;
                 }
 
 
-                magasin.AddRange(stateParser);
-                generator.AddRange(fucts);
+                for (int i = 0; i < stateParser.Count; i++)
+                {
+                    magasin.Insert(0, stateParser[stateParser.Count - 1 - i]);
+                    generator.Insert(0, fucts[fucts.Count - 1 - i]);
+                }
+
+
+                // magasin.AddRange(stateParser);
+                // generator.AddRange(fucts);
             }
 
             public string printMagasin()
             {
                 string text = "MAGASIN\n";
-                foreach (StateParser s in magasin) 
+                foreach (StateParser s in magasin)
                 {
                     text += "type: " + s.type.ToString() + '\n';
                     text += "state: " + s.state.ToString() + '\n' + '\n';
@@ -304,7 +457,7 @@ namespace lexAnalyzerForms
             public string printGenerator()
             {
                 string text = "Generator\n";
-                
+
                 for (int i = 0; i < oPSTok.ops.Count; i++)
                 {
                     text += "type: " + oPSTok.ops[i].Type.ToString() + '\n';
@@ -313,14 +466,13 @@ namespace lexAnalyzerForms
                 return text;
             }
 
-            public void runGenerator()
-            {
-                foreach (Action act in generator)
-                {
-                    act();
-                }
-            }
-
+            //public void runGenerator()
+            //{
+            //    foreach (Action act in generator)
+            //    {
+            //        act();
+            //    }
+            //}
             public List<Lexem> getOPS()
             {
                 /*List<Lexem> listTest = new List<Lexem>();
@@ -332,8 +484,6 @@ namespace lexAnalyzerForms
                 return oPSTok.opsTest;*/
                 return oPSTok.ops;
             }
-
-
 
         }
     }

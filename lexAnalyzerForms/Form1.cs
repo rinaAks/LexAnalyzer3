@@ -31,19 +31,19 @@ namespace lexAnalyzerForms
             // tbOutput.Text = lexer.GetOutputText();
             
             ParserClass.Parser parser = new ParserClass.Parser();
-            //parser.FillMagazine();
+            parser.FillMagazine();
             
             //tbOutput.Text += parser.printMagasin();
             //parser.runGenerator();
-            //tbOutput.Text += parser.printGenerator();
+            tbOutput.Text += parser.printGenerator();
 
             //opsLexemsStorage = parser.getOPS();
 
             //OPS_exe ooops = new OPS_exe(opsLexemsStorage);
             //tbOutput.Text += ooops.Calculate().ToString();
             
-            OPS_exe ooops = new OPS_exe(myStorage);
-            tbOutput.Text += ooops.Calculate().Value.ToString() + '\n';
+            //OPS_exe ooops = new OPS_exe(myStorage);
+            //tbOutput.Text += ooops.Calculate().Value.ToString() + '\n';
 
             foreach(Lexem lexem in myVarStorage) 
             {
