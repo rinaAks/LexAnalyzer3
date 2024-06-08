@@ -18,6 +18,7 @@ namespace lexAnalyzerForms
 
         public static List<Lexem> myStorage;
         public static List<Lexem> myVarStorage;
+        public static List<Lexem> opsLexemsStorage;
         private void button1_Click(object sender, EventArgs e)
         {
             //myStorage.Clear();
@@ -30,10 +31,19 @@ namespace lexAnalyzerForms
             // tbOutput.Text = lexer.GetOutputText();
             
             ParserClass.Parser parser = new ParserClass.Parser();
-            parser.FillMagazine();
+            //parser.FillMagazine();
+            
             //tbOutput.Text += parser.printMagasin();
-            parser.runGenerator();
-            tbOutput.Text += parser.printGenerator();
+            //parser.runGenerator();
+            //tbOutput.Text += parser.printGenerator();
+
+            //opsLexemsStorage = parser.getOPS();
+
+            //OPS_exe ooops = new OPS_exe(opsLexemsStorage);
+            //tbOutput.Text += ooops.Calculate().ToString();
+            OPS_exe ooops = new OPS_exe(myStorage);
+            tbOutput.Text += ooops.Calculate().ToString();
+
         }
     }
 

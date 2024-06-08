@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,7 +68,19 @@ namespace lexAnalyzerForms
             {
                 Type = LexemType.EMPTY;
                 Name = "";
-                Value = "";
+                //Value = "";
+            }
+            public Lexem(LexemType ttype, string nname)
+            {
+                Type = ttype;
+                Name = nname;
+                //Value = "";
+            }
+            public Lexem(LexemType ttype, string nname, object vvalue)
+            {
+                Type = ttype;
+                Name = nname;
+                Value = vvalue;
             }
         }
 
@@ -365,6 +378,18 @@ namespace lexAnalyzerForms
                             lex.Value = LexemStorage[i].Name;
                             lex.Name = LexemStorage[i - 2].Name;
                             VariableStorage.Add(lex);
+                        }
+                    }
+
+                    if(lex.Value == null)
+                    {
+                        if (lex.Type == LexemType.INTEGER)
+                        {
+                            lex.Value = Int32.Parse(LexemStorage[i].Name);
+                        }
+                        if (lex.Type == LexemType.DECIMAL)
+                        {
+                            lex.Value = double.Parse(LexemStorage[i].Name, CultureInfo.InvariantCulture.NumberFormat);
                         }
                     }
                 }

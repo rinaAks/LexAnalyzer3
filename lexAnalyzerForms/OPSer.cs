@@ -10,12 +10,14 @@ namespace lexAnalyzerForms
     public class OPSTok
     {
         public List<Lexem> ops;
+        public List<Lexem> opsTest;
 
         public LexemType type;
 
         public OPSTok() 
         {
             this.ops = new List<Lexem>();
+            this.opsTest = new List<Lexem>();
         }
     }
 
