@@ -181,6 +181,7 @@ namespace lexAnalyzerForms
                     stateParser[0].type = LexemType.DECIMAL_DECLARE;
                     stateParser[1].state = StateLetter.I;
                     stateParser[2].state = StateLetter.F;
+                    
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
                 }
@@ -194,6 +195,7 @@ namespace lexAnalyzerForms
                     stateParser[0].type = LexemType.ARRAY_DECLARE;
                     stateParser[1].state = StateLetter.A;
                     stateParser[2].state = StateLetter.F;
+                    
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
                 }
@@ -211,16 +213,11 @@ namespace lexAnalyzerForms
                     stateParser[4].type = LexemType.RPAREN;
                     stateParser[5].type = LexemType.SEMICOLON;
                     stateParser[6].state = StateLetter.Q;
+                    
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
-                    fucts.RemoveAt(1);
-                    fucts.Insert(1, name);
-                    fucts.RemoveAt(2);
-                    fucts.Insert(2, name);
-                    fucts.RemoveAt(4);
-                    fucts.Insert(4, name);
-                    fucts.RemoveAt(5);
-                    fucts.Insert(5, name);
+                    
+
 
                 }
                 ///////    I    //////////
@@ -276,6 +273,8 @@ namespace lexAnalyzerForms
                     stateParser[3].state = StateLetter.U;
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
+                    fucts.RemoveAt(0);
+                    fucts.Insert(0, name);
                 }
 
                 if (stateLex == StateLetter.S && type == LexemType.DECIMAL)
@@ -316,6 +315,8 @@ namespace lexAnalyzerForms
                     stateParser[2].type = LexemType.RPAREN;
                     stateParser[3].state = StateLetter.V;
                     stateParser[4].state = StateLetter.U;
+                    fucts.RemoveAt(0);
+                    fucts.Insert(0, name);
 
                 }
 
@@ -333,7 +334,6 @@ namespace lexAnalyzerForms
                     stateParser[2].type = LexemType.RSQUARE;
                     fucts.RemoveAt(1);
                     fucts.Insert(1, name);
-
                 }
 
                 ///////// Q /////////
@@ -373,14 +373,7 @@ namespace lexAnalyzerForms
                     stateParser[6].state = StateLetter.Q;
                     fucts.RemoveAt(0);
                     fucts.Insert(0, name);
-                    fucts.RemoveAt(1);
-                    fucts.Insert(1, name);
-                    fucts.RemoveAt(2);
-                    fucts.Insert(2, name);
-                    fucts.RemoveAt(4);
-                    fucts.Insert(4, name);
-                    fucts.RemoveAt(5);
-                    fucts.Insert(5, name);
+
                 }
                 if (stateLex == StateLetter.Q && type == LexemType.OUTPUT)
                 {
@@ -395,6 +388,8 @@ namespace lexAnalyzerForms
                     stateParser[3].type = LexemType.RPAREN;
                     stateParser[4].type = LexemType.SEMICOLON;
                     stateParser[5].state = StateLetter.Q;
+                    fucts.RemoveAt(0);
+                    fucts.Insert(0, name);
                 }
                 if (stateLex == StateLetter.Q && type == LexemType.IF)
                 {
